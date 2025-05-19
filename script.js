@@ -1,0 +1,248 @@
+// Constants
+const API = "https://backend-of-blog.onrender.com/api";
+
+// DOM Elements
+const navItems = document.querySelectorAll(".nav-item");
+const slider = document.querySelector(".slider");
+const pages = document.querySelectorAll(".page");
+
+const home = document.querySelector("#home");
+const newPost = document.querySelector("#newPost");
+const profile = document.querySelector("#profile");
+
+const postContent = document.querySelector(".post-content");
+const authForm = document.querySelector("#auth-form");
+const toggleLink = document.querySelector("#toggleLink");
+const subtext = document.querySelector(".subtext");
+
+// Initial State
+let isLogin = true;
+
+// Page Utilities
+function showPage(pageId) {
+  pages.forEach((page) => {
+    page.style.display = page.id === pageId ? "block" : "none";
+  });
+}
+
+function activateNavItem(item) {
+  navItems.forEach((i) => i.classList.remove("active"));
+  item.classList.add("active");
+  slider.style.left = `${item.offsetLeft}px`;
+}
+
+// DOM Load Handler
+window.addEventListener("DOMContentLoaded", async () => {
+  postContent.innerHTML = "";
+  fetchAllPosts();
+
+  const activeItem = document.querySelector(".nav-item.active");
+  if (activeItem) {
+    slider.style.left = `${activeItem.offsetLeft}px`;
+    switch (activeItem.id) {
+      case "home":
+        showPage("homePage");
+        break;
+      case "newPost":
+        showPage("newPostPage");
+        break;
+      case "profile": {
+        const token = localStorage.getItem("token");
+        showPage(token ? "userpage" : "profilePage");
+        break;
+      }
+      default:
+        showPage("homePage");
+        activateNavItem(home);
+    }
+  } else {
+    showPage("homePage");
+    activateNavItem(home);
+  }
+
+  fetchUserPosts();
+});
+
+// Nav Event Listeners
+home.addEventListener("click", () => {
+  showPage("homePage");
+  activateNavItem(home);
+});
+
+newPost.addEventListener("click", () => {
+  showPage("newPostPage");
+  activateNavItem(newPost);
+});
+
+profile.addEventListener("click", () => {
+  activateNavItem(profile);
+  const token = localStorage.getItem("token");
+  showPage(token ? "userpage" : "profilePage");
+});
+
+// Fetch All Posts
+async function fetchAllPosts() {
+  try {
+    const res = await fetch(`${API}/posts/all`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (!res.ok) throw new Error(`HTTP error! Status ${res.status}`);
+
+    const data = await res.json();
+    postContent.innerHTML = ""; // Clear existing posts
+
+    data.forEach((post) => {
+      const postCard = document.createElement("div");
+      postCard.className = "post-card";
+
+      postCard.innerHTML = `
+        <div class="post-header">
+          <div class="profile-pic"></div>
+          <p class="username">@${post.author}</p>
+          ${
+            post.author === "rehan"
+              ? `<i class="fa-brands fa-bluesky fa-flip verify"></i>`
+              : ""
+          }
+        </div>
+        <div class="post-body">
+          <p class="post-text">
+            ${
+              post.content.length >= 30
+                ? post.content.slice(0, 50) + " ....more"
+                : post.content
+            }
+          </p>
+        </div>
+      `;
+
+      postContent.prepend(postCard);
+    });
+  } catch (error) {
+    console.error("Error fetching posts:", error.message);
+  }
+}
+
+// Toggle Login/Signup Form
+if (authForm) {
+  toggleLink.addEventListener("click", (e) => {
+    e.preventDefault();
+    isLogin = !isLogin;
+
+    document.querySelector(".text").textContent = isLogin
+      ? "Welcome Back 👋"
+      : "Create an Account";
+    subtext.textContent = isLogin
+      ? "Log in to your blog account to continue."
+      : "Join us and start sharing your thoughts.";
+    document.querySelector("#btn").textContent = isLogin ? "Login" : "Sign up";
+    document.querySelector(".switch").firstChild.textContent = isLogin
+      ? "Don't have an account? "
+      : "Already have an account? ";
+    toggleLink.textContent = isLogin ? "Sign up" : "Login";
+  });
+
+  // Submit Login or Signup
+  authForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const username = document.querySelector("#username").value;
+    const password = document.querySelector("#password").value;
+    const endpoint = isLogin ? "/login" : "/signup";
+
+    try {
+      const res = await fetch(`${API}${endpoint}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+
+      if (!res.ok) {
+        const errData = await res.json();
+        document.querySelector(".errorMessage").textContent =
+          errData.message || "Login failed.";
+        return;
+      }
+      document.querySelector("#username").value = "";
+      document.querySelector("#password").value = "";
+      const data = await res.json();
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("author", data.username);
+
+      showPage("userpage");
+      fetchUserPosts();
+    } catch (error) {
+      document.querySelector(".errorMessage").textContent =
+        "Something went wrong. Try again.";
+    }
+  });
+}
+
+// Fetch Authenticated User Posts
+async function fetchUserPosts() {
+  const token = localStorage.getItem("token");
+  const username = localStorage.getItem("author");
+
+  if (!token || !username) return;
+
+  try {
+    const res = await fetch(`${API}/posts`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+
+    const posts = await res.json();
+    // console.log(posts)
+    const userPostsContainer = document.querySelector(".user-posts");
+
+    if (userPostsContainer) {
+      userPostsContainer.innerHTML = ""; // Clear previous posts
+      posts.forEach((post) => {
+        const card = document.createElement("div");
+        card.className = "post-card";
+        card.innerHTML = `
+          <div class="post-header">
+            <div class="profile-pic"></div>
+            <p class="username">${post.author}</p>
+          </div>
+          <div class="post-body">
+            <p class="post-text">${post.content}</p>
+          </div>
+        `;
+        userPostsContainer.appendChild(card);
+      });
+    }
+
+    const usernameDisplay = document.querySelector(".login-username");
+    if (usernameDisplay) usernameDisplay.textContent = `${username}`;
+  } catch (error) {
+    console.error("Failed to fetch user posts:", error.message);
+  }
+}
+//logout logic
+
+const logoutBtn = document.querySelector(".logoutBtn");
+
+logoutBtn.addEventListener("click", () => {
+  // Remove user session data
+  localStorage.removeItem("token");
+  localStorage.removeItem("author");
+
+  // Reset view to public homepage
+  showPage("homePage");
+  activateNavItem(home);
+
+  // Clear user-specific content if needed
+  const userPostsContainer = document.querySelector(".user-posts");
+  if (userPostsContainer) userPostsContainer.innerHTML = "";
+
+  // Refresh public posts
+  fetchAllPosts();
+});
