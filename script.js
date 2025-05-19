@@ -110,9 +110,10 @@ async function fetchAllPosts() {
         <div class="post-body">
           <p class="post-text">
             ${
-              post.content.length >= 30
-                ? post.content.slice(0, 50) + " ....more"
-                : post.content
+              // post.content.length >= 30
+              //   ? post.content.slice(0, 50) + " ....more"
+              //   : post.content
+              post.content
             }
           </p>
         </div>
