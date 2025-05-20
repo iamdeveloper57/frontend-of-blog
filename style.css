@@ -135,7 +135,21 @@ body {
   height: 100vh;
   width: 100%;
   text-align: center;
-  /* background-color: #333; */
+  padding: 20px;
+}
+
+#title,
+#content {
+  height: 40px;
+  width: 100%;
+  border-radius: 7px;
+  padding: 5px;
+  margin: 0 0 15px 0;
+}
+
+.create-error {
+  margin: 5px 0 10px 0;
+  color: red;
 }
 
 /* profile page */
@@ -151,7 +165,6 @@ body {
   background: white;
   padding: 40px;
   border-radius: 12px;
-  /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); */
   width: 100%;
   max-width: 500px;
 }
@@ -196,8 +209,8 @@ input {
   transition: all 0.3s ease;
 }
 
-input:focus + label,
-input:not(:placeholder-shown) + label {
+input:focus+label,
+input:not(:placeholder-shown)+label {
   top: -3px;
   font-size: 16px;
   color: #3b82f6;
@@ -254,22 +267,81 @@ button:hover {
 
 /* login success userpage */
 #userpage {
-  height: 100vh;
+  height: auto;
   width: 100%;
+  padding: 10px;
 }
+
 .login-post {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100px;
-  width: 50%;
+  flex-direction: column;
+  height: 200px;
+  width: 100%;
 }
-/* login user  posts */
-.loginuser-posts {
-  height: 100vh;
+
+.login-post .profile-text {
+  position: fixed;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 50px;
   width: 100%;
   padding: 10px;
+  background-color: #aaa;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 999;
 }
+
+.logoutBtn {
+  height: 40;
+  width: 75px;
+  background-color: #333;
+}
+
+.login-user-pic {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 75px;
+  width: 75px;
+  border-radius: 50%;
+  background-color: #aaa;
+  font-size: 40px;
+  margin: 20px 0 10px 0;
+  border: 3px solid skyblue;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.login-username {
+  font-size: 18px;
+}
+
+/* login user  posts */
+.loginuser-posts {
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  width: 100%;
+  margin-bottom: 100px;
+}
+
+.login-post-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 5px auto;
+  text-align: center;
+  height: 40px;
+  width: 100px;
+  background-color: #aaa;
+  border-radius: 9px;
+  font-size: 14px;
+}
+
 /* login page */
 
 /*  footer */
@@ -281,5 +353,55 @@ footer {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  /* margin-bottom: 50px; */
+}
+
+/* loader  */
+#postLoader {
+  display: none;
+  padding: 20px;
+}
+
+/* Skeleton loader container */
+.skeleton-card {
+  background: #f0f0f0;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+/* Skeleton blocks inside the card */
+.skeleton-line {
+  height: 14px;
+  background: #ccc;
+  border-radius: 6px;
+  margin: 8px 0;
+}
+
+.skeleton-line.short {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+}
+
+.skeleton-line.medium {
+  width: 70%;
+}
+
+.skeleton-line.long {
+  width: 90%;
+}
+
+@keyframes pulse {
+  0% {
+    background-color: #e0e0e0;
+  }
+
+  50% {
+    background-color: #d3d3d3;
+  }
+
+  100% {
+    background-color: #e0e0e0;
+  }
 }

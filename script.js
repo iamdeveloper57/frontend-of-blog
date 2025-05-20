@@ -78,10 +78,13 @@ profile.addEventListener("click", () => {
   activateNavItem(profile);
   const token = localStorage.getItem("token");
   showPage(token ? "userpage" : "profilePage");
+  document.querySelector("footer").style.display = "none";
 });
 
-// Fetch All Posts
+// Fetch All Posts with skeleton effect ------
 async function fetchAllPosts() {
+  const loader = document.querySelector("#postLoader");
+  if (loader) loader.style.display = "block";
   try {
     const res = await fetch(`${API}/posts/all`, {
       method: "GET",
@@ -109,20 +112,15 @@ async function fetchAllPosts() {
         </div>
         <div class="post-body">
           <p class="post-text">
-            ${
-              // post.content.length >= 30
-              //   ? post.content.slice(0, 50) + " ....more"
-              //   : post.content
-              post.content
-            }
+            ${post.content}
           </p>
-        </div>
-      `;
-
+        </div>`;
       postContent.prepend(postCard);
     });
   } catch (error) {
     console.error("Error fetching posts:", error.message);
+  } finally {
+    if (loader) loader.style.display = "none";
   }
 }
 
@@ -187,7 +185,8 @@ async function fetchUserPosts() {
   const username = localStorage.getItem("author");
 
   if (!token || !username) return;
-
+  const usernameDisplay = document.querySelector(".login-username");
+  usernameDisplay.textContent = `${username}`;
   try {
     const res = await fetch(`${API}/posts`, {
       method: "GET",
@@ -200,7 +199,10 @@ async function fetchUserPosts() {
     if (!res.ok) throw new Error(`HTTP error ${res.status}`);
 
     const posts = await res.json();
-    // console.log(posts)
+    if (posts.message === "Add blog") {
+      return console.log(posts.message);
+    }
+
     const userPostsContainer = document.querySelector(".user-posts");
 
     if (userPostsContainer) {
@@ -214,21 +216,19 @@ async function fetchUserPosts() {
             <p class="username">${post.author}</p>
           </div>
           <div class="post-body">
-            <p class="post-text">${post.content}</p>
+            <p class="post-text">${post.content || posts.message}</p>
           </div>
         `;
         userPostsContainer.appendChild(card);
       });
     }
-
-    const usernameDisplay = document.querySelector(".login-username");
-    if (usernameDisplay) usernameDisplay.textContent = `${username}`;
   } catch (error) {
     console.error("Failed to fetch user posts:", error.message);
   }
 }
-//logout logic
 
+//logout logic
+const post_form = document.querySelector("#post-form");
 const logoutBtn = document.querySelector(".logoutBtn");
 
 logoutBtn.addEventListener("click", () => {
@@ -239,6 +239,7 @@ logoutBtn.addEventListener("click", () => {
   // Reset view to public homepage
   showPage("homePage");
   activateNavItem(home);
+  post_form.style.display = "none";
 
   // Clear user-specific content if needed
   const userPostsContainer = document.querySelector(".user-posts");
@@ -247,3 +248,53 @@ logoutBtn.addEventListener("click", () => {
   // Refresh public posts
   fetchAllPosts();
 });
+
+// create new post
+const token = localStorage.getItem("token");
+const createError = document.querySelector(".create-error");
+
+if (!token) {
+  post_form.style.display = "none";
+  document.querySelector(".login-first").innerHTML = "Login first!";
+}
+if (post_form) {
+  const createBtn = document.querySelector(".create-Btn");
+  createBtn.addEventListener("click", async (e) => {
+    e.preventDefault();
+    const title = document.querySelector("#title").value;
+    const content = document.querySelector("#content").value;
+    if (!title || !content) {
+      return (createError.innerHTML = "add title and content to post");
+    }
+    if (title.length < 5) {
+      return (createError.innerHTML = "Title should be more than 5 char");
+    }
+    if (content.length < 15) {
+      return (createError.innerHTML = "content should be more than 15 char");
+    }
+    try {
+      const res = await fetch(`${API}/posts`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ title, content }),
+      });
+      if (!res.ok) {
+        createError.textContent = "Try Again";
+        return;
+      }
+      showPage("homePage");
+      activateNavItem(home);
+      fetchAllPosts();
+      post_form.style.display = "block";
+
+      createError.textContent = "";
+      const data = await res.json();
+      console.log(data.message);
+    } catch (error) {
+      console.error(error);
+    }
+  });
+}
