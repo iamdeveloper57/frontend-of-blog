@@ -1,67 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blog app</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+      integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Blog app</title>
-  <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-    integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
-</head>
-
-<body>
-  <!-- Shared Navbar -->
-  <div class="navbar">
-    <div class="slider"></div>
-    <div class="nav-item active" id="home">
-      <i class="fa-solid fa-house" id="home-btn"></i>
-    </div>
-    <div class="nav-item" id="newPost"><i class="fa-solid fa-plus"></i></div>
-    <div class="nav-item" id="profile"><i class="fa-solid fa-user"></i></div>
-  </div>
-
-  <!-- Home Page -->
-  <div class="page" id="homePage">
-    <header>
-      <div class="top">
-        <h6>Piko</h6>
-        <p>Express freely. Connect deeply. Welcome to Piko.</p>
+  <body>
+    <!-- Shared Navbar -->
+    <div class="navbar">
+      <div class="slider"></div>
+      <div class="nav-item active" id="home">
+        <i class="fa-solid fa-house" id="home-btn"></i>
       </div>
-    </header>
-    <div id="postLoader">
-      <div class="skeleton-card">
-        <div class="skeleton-line short"></div>
-        <div class="skeleton-line long"></div>
-        <div class="skeleton-line medium"></div>
-      </div>
-      <div class="skeleton-card">
-        <div class="skeleton-line short"></div>
-        <div class="skeleton-line long"></div>
-        <div class="skeleton-line medium"></div>
-      </div>
-      <div class="skeleton-card">
-        <div class="skeleton-line short"></div>
-        <div class="skeleton-line long"></div>
-        <div class="skeleton-line medium"></div>
-      </div>
-      <div class="skeleton-card">
-        <div class="skeleton-line short"></div>
-        <div class="skeleton-line long"></div>
-        <div class="skeleton-line medium"></div>
-      </div>
-      <div class="skeleton-card">
-        <div class="skeleton-line short"></div>
-        <div class="skeleton-line long"></div>
-        <div class="skeleton-line medium"></div>
-      </div>
+      <div class="nav-item" id="newPost"><i class="fa-solid fa-plus"></i></div>
+      <div class="nav-item" id="profile"><i class="fa-solid fa-user"></i></div>
     </div>
 
-    <div class="post-content">
+    <!-- Home Page -->
+    <div class="page" id="homePage">
+      <header>
+        <div class="top">
+          <h6>Piko</h6>
+          <p>Express freely. Connect deeply. Welcome to Piko.</p>
+        </div>
+      </header>
+      <div id="postLoader">
+        <div class="skeleton-card">
+          <div class="skeleton-line short"></div>
+          <div class="skeleton-line long"></div>
+          <div class="skeleton-line medium"></div>
+        </div>
+        <div class="skeleton-card">
+          <div class="skeleton-line short"></div>
+          <div class="skeleton-line long"></div>
+          <div class="skeleton-line medium"></div>
+        </div>
+        <div class="skeleton-card">
+          <div class="skeleton-line short"></div>
+          <div class="skeleton-line long"></div>
+          <div class="skeleton-line medium"></div>
+        </div>
+        <div class="skeleton-card">
+          <div class="skeleton-line short"></div>
+          <div class="skeleton-line long"></div>
+          <div class="skeleton-line medium"></div>
+        </div>
+        <div class="skeleton-card">
+          <div class="skeleton-line short"></div>
+          <div class="skeleton-line long"></div>
+          <div class="skeleton-line medium"></div>
+        </div>
+      </div>
 
-      <!-- Repeated Post Cards -->
-      <!-- <div class="post-card">
+      <div class="post-content">
+        <!-- Repeated Post Cards -->
+        <!-- <div class="post-card">
                 <div class="post-header">
                     <div class="profile-pic"></div>
                     <p class="username">@rehan</p>
@@ -73,77 +75,82 @@
                 </div>
             </div> -->
 
-      <!-- Duplicate the post-card above for more posts as needed -->
-    </div>
-  </div>
-  <!-- New Post Page -->
-  <div class="page" id="newPostPage">
-    <!-- You can add a form here to create a new post -->
-    <h2 style="padding: 20px">Create New Post</h2>
-    <h3 class="login-first"></h3>
-    <form id="post-form">
-      <input type="text" id="title" placeholder="Title" required />
-      <textarea name="content" id="content" placeholder="content" required></textarea>
-      <p class="create-error"></p>
-      <button class="create-Btn">Create</button>
-    </form>
-  </div>
-
-  <!-- Profile/Login Page -->
-  <div class="page" id="userpage" style="display: none">
-    <div class="login-post">
-      <div class="profile-text">
-        <h2>Profile</h2> <button class="logoutBtn">Logout</button>
+        <!-- Duplicate the post-card above for more posts as needed -->
       </div>
-      <div class="login-user-pic"><i class="fa-solid fa-user"></i></div>
-      <p class="login-username"></p>
-      <!-- <p class="verify"><i class="fa-brands fa-bluesky fa-flip" style="color: #74C0FC;"></i></p> -->
     </div>
-    <hr />
-    <p class="login-post-nav">Your posts</p>
-    <div class="loginuser-posts user-posts"></div>
-  </div>
-
-  <div id="profilePage" class="page">
-    <div class="login-container">
-      <form class="login-form" id="auth-form">
-        <h2 class="text">Welcome Back 👋</h2>
-        <p class="subtext">Log in to your blog account to continue.</p>
-        <!-- Username -->
-        <div class="form-group">
-          <input type="text" id="username" placeholder=" " required />
-          <label for="username">Username</label>
-        </div>
-
-        <!-- Password -->
-        <div class="form-group">
-          <input type="password" id="password" placeholder=" " required />
-          <label for="password">Password</label>
-        </div>
-
-        <p class="errorMessage"></p>
-
-        <button type="submit" id="btn">Log In</button>
-
-        <p class="switch">
-          Don't have an account?
-          <a href="#" id="toggleLink">Sign up</a>
-        </p>
+    <!-- New Post Page -->
+    <div class="page" id="newPostPage">
+      <!-- You can add a form here to create a new post -->
+      <h2 style="padding: 20px">Create New Post</h2>
+      <h3 class="login-first"></h3>
+      <form id="post-form">
+        <input type="text" id="title" placeholder="Title" required />
+        <textarea
+          name="content"
+          id="content"
+          placeholder="content"
+          required
+        ></textarea>
+        <p class="create-error"></p>
+        <button class="create-Btn">Create</button>
       </form>
     </div>
-  </div>
 
-  <footer>
-    <p>&copy; 2025 Piko. All rights reserved.</p>
-    <p>
-      <!-- <a href="/privacy">Privacy Policy</a> |
+    <!-- Profile/Login Page -->
+    <div class="page" id="userpage" style="display: none">
+      <div class="login-post">
+        <div class="profile-text">
+          <h2>Profile</h2>
+          <button class="logoutBtn">Logout</button>
+        </div>
+        <div class="login-user-pic"><i class="fa-solid fa-user"></i></div>
+        <p class="login-username"></p>
+        <!-- <p class="verify"><i class="fa-brands fa-bluesky fa-flip" style="color: #74C0FC;"></i></p> -->
+      </div>
+      <hr />
+      <p class="login-post-nav">Your posts</p>
+      <div class="loginuser-posts user-posts"></div>
+    </div>
+
+    <div id="profilePage" class="page">
+      <div class="login-container">
+        <form class="login-form" id="auth-form">
+          <h2 class="text">Welcome Back 👋</h2>
+          <p class="subtext">Log in to your blog account to continue.</p>
+          <!-- Username -->
+          <div class="form-group">
+            <input type="text" id="username" placeholder=" " required />
+            <label for="username">Username</label>
+          </div>
+
+          <!-- Password -->
+          <div class="form-group">
+            <input type="password" id="password" placeholder=" " required />
+            <label for="password">Password</label>
+          </div>
+
+          <p class="errorMessage" aria-live="polite"></p>
+
+          <button type="submit" id="btn">Log In</button>
+
+          <p class="switch">
+            Don't have an account?
+            <a href="#" id="toggleLink">Sign up</a>
+          </p>
+        </form>
+      </div>
+    </div>
+
+    <footer>
+      <p>&copy; 2025 Piko. All rights reserved.</p>
+      <p>
+        <!-- <a href="/privacy">Privacy Policy</a> |
     <a href="/terms">Terms of Service</a> |
     <a href="/about">About</a> -->
-    </p>
-    <p>Made with ❤️ by @iamdeveloper</p>
-  </footer>
+      </p>
+      <p>Made with ❤️ by @iamdeveloper</p>
+    </footer>
 
-  <script src="script.js"></script>
-</body>
-
+    <script src="script.js" defer></script>
+  </body>
 </html>

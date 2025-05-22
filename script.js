@@ -97,24 +97,34 @@ async function fetchAllPosts() {
     postContent.innerHTML = ""; // Clear existing posts
 
     data.forEach((post) => {
+      const date = new Date(post.date).toLocaleDateString("en-US", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      });
       const postCard = document.createElement("div");
       postCard.className = "post-card";
 
       postCard.innerHTML = `
         <div class="post-header">
+        <div class="pic-username">
           <div class="profile-pic"></div>
           <p class="username">@${post.author}</p>
           ${
             post.author === "rehan"
               ? `<i class="fa-brands fa-bluesky fa-flip verify"></i>`
               : ""
-          }
+          } </div>
         </div>
         <div class="post-body">
           <p class="post-text">
             ${post.content}
           </p>
-        </div>`;
+        </div>
+         <div>
+          <p class="time"> · ${date}</p>
+          </div>
+        `;
       postContent.prepend(postCard);
     });
   } catch (error) {
@@ -178,10 +188,10 @@ if (authForm) {
     }
   });
 }
+const token = localStorage.getItem("token");
 
 // Fetch Authenticated User Posts
 async function fetchUserPosts() {
-  const token = localStorage.getItem("token");
   const username = localStorage.getItem("author");
 
   if (!token || !username) return;
@@ -212,13 +222,40 @@ async function fetchUserPosts() {
         card.className = "post-card";
         card.innerHTML = `
           <div class="post-header">
+          <div class="pic-username">
             <div class="profile-pic"></div>
             <p class="username">${post.author}</p>
+              <p class="time"> · ${new Date(post.date).toLocaleDateString(
+                "en-US",
+                {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                }
+              )}</p> </div>
+              <div>
+             <div class="dots" data-id="${
+               post._id
+             }"> <i class="fa-solid fa-trash"></i> </div>
+              </div>
           </div>
           <div class="post-body">
             <p class="post-text">${post.content || posts.message}</p>
           </div>
         `;
+        const dots = card.querySelector(".dots");
+        dots.addEventListener("click", async () => {
+          const res = await fetch(`${API}/posts/${dots.dataset.id}`, {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          if (res.ok) {
+            card.remove();
+          }
+        });
         userPostsContainer.appendChild(card);
       });
     }
@@ -250,7 +287,7 @@ logoutBtn.addEventListener("click", () => {
 });
 
 // create new post
-const token = localStorage.getItem("token");
+// const token = localStorage.getItem("token");
 const createError = document.querySelector(".create-error");
 
 if (!token) {
