@@ -95,7 +95,7 @@ async function fetchAllPosts() {
 
     const data = await res.json();
     postContent.innerHTML = ""; // Clear existing posts
-
+    data.sort((a, b) => new Date(b.date) - new Date(a.date));
     data.forEach((post) => {
       const date = new Date(post.date).toLocaleDateString("en-US", {
         day: "numeric",
@@ -125,7 +125,7 @@ async function fetchAllPosts() {
           <p class="time"> · ${date}</p>
           </div>
         `;
-      postContent.prepend(postCard);
+      postContent.appendChild(postCard);
     });
   } catch (error) {
     console.error("Error fetching posts:", error.message);
@@ -245,16 +245,26 @@ async function fetchUserPosts() {
         `;
         const dots = card.querySelector(".dots");
         dots.addEventListener("click", async () => {
-          const res = await fetch(`${API}/posts/${dots.dataset.id}`, {
-            method: "DELETE",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
+          const deleteBox = document.querySelector(".delete-opt");
+          const deleteNo = document.querySelector("#no");
+          const deleteYes = document.querySelector("#yes");
+          deleteBox.style.display = "flex";
+          deleteNo.addEventListener("click", () => {
+            deleteBox.style.display = "none";
           });
-          if (res.ok) {
-            card.remove();
-          }
+          deleteYes.addEventListener("click", async () => {
+            const res = await fetch(`${API}/posts/${dots.dataset.id}`, {
+              method: "DELETE",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+            });
+            if (res.ok) {
+              card.remove();
+              deleteBox.style.display = "none";
+            }
+          });
         });
         userPostsContainer.appendChild(card);
       });
@@ -326,8 +336,9 @@ if (post_form) {
       activateNavItem(home);
       fetchAllPosts();
       post_form.style.display = "block";
-
       createError.textContent = "";
+      document.querySelector("#title").value = "";
+      document.querySelector("#content").value = "";
       const data = await res.json();
       console.log(data.message);
     } catch (error) {
